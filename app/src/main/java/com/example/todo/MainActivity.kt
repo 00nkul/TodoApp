@@ -1,5 +1,6 @@
 package com.example.todo
 
+
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -15,7 +16,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import java.time.DayOfWeek
+import java.lang.RuntimeException
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.*
@@ -37,6 +38,13 @@ class MainActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
 
         val database = Firebase.database
+
+        try {
+            database.setPersistenceEnabled(true)
+        }
+        catch (e: RuntimeException) {
+            Toast.makeText(this, "Unable to save note to FireBase", Toast.LENGTH_LONG).show()
+        }
         val myref = database.getReference("toDo")
 
         val keys  = arrayListOf<String>()
@@ -149,11 +157,11 @@ class MainActivity : AppCompatActivity() {
         tvDate.text = day.toString()
         tvDayYear.text = "$dow \n$month ${year.toString()}"
 
-        Log.d("datteIs",data.toString())
-        Log.d("Monthis",month.toString())
-        Log.d("dayis",day.toString())
-        Log.d("yearIs",year.toString())
-        Log.d("dayIs",dow)
+        Log.d("datteIs", data.toString())
+        Log.d("Monthis", month.toString())
+        Log.d("dayis", day.toString())
+        Log.d("yearIs", year.toString())
+        Log.d("dayIs", dow)
 
 
 
@@ -163,6 +171,7 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
 
 
 }

@@ -14,6 +14,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
@@ -47,13 +48,16 @@ class CustomAdapter (val data:ArrayList<toDoData>):RecyclerView.Adapter<CustomAd
                 //holder.tvHead.setTextColor(Color.GREEN)
 //                holder.linear1.setBackgroundColor(Color.parseColor("#F2222222"))
 //                holder.linera2.setBackgroundColor(Color.parseColor("#F2222222"))
-                holder.card.setBackgroundColor(Color.parseColor("#F2222222"))
+
+                holder.card.setCardBackgroundColor(Color.parseColor("#1a3582"))
+                holder.tvHead.setTextColor(Color.parseColor("#c9c9c9"))
+                holder.tvDescription.setTextColor(Color.parseColor("#c9c9c9"))
 
 
             }else{
                 holder.tvHead.paintFlags = 0
                 holder.tvDescription.paintFlags = 0
-                holder.card.setBackgroundColor(Color.parseColor("#041955"))
+                holder.card.setCardBackgroundColor(Color.parseColor("#041955"))
 
             }
 
@@ -70,15 +74,10 @@ class CustomAdapter (val data:ArrayList<toDoData>):RecyclerView.Adapter<CustomAd
 //                builder.create()
                 dialouge(v!!.context,data[position].todoTitle,data[position].todoContent).show()
 
-                Log.d("ClickedOn",45.toString())
+                //Log.d("ClickedOn",45.toString())
 
             }
         })
-
-
-
-
-
     }
 
     override fun getItemCount(): Int {
