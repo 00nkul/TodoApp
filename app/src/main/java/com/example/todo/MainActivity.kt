@@ -1,12 +1,19 @@
 package com.example.todo
 
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,10 +31,14 @@ import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
+
+    val CHANNEL_ID = "Channel_ID"
+    val channel_name = "channel_name"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        createNotificationChannel()
         supportActionBar?.hide()
 
 
@@ -42,9 +53,11 @@ class MainActivity : AppCompatActivity() {
         try {
             database.setPersistenceEnabled(true)
         }
-        catch (e: RuntimeException) {
-            Toast.makeText(this, "Unable to save note to FireBase", Toast.LENGTH_LONG).show()
-        }
+        catch (e: RuntimeException) { }
+
+
+
+
         val myref = database.getReference("toDo")
 
         val keys  = arrayListOf<String>()
@@ -90,21 +103,16 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+
+
         val adapter = CustomAdapter(data)
-
-
-
-
         //Function for Delete
         fun deleteFromDatabase(id: Int) {
             val database2 = Firebase.database
             val refrence = database2.getReference("toDo")
+            refrence.child(keys[id]).removeValue()
 
-
-                refrence.child(keys[id]).removeValue()
-//            Log.d("delete$", keys[id])
-//            Log.d("deleteditemf", keys[id])
-//            Log.d("deleteFunLog", id.toString())
+            NotificationManagerCompat.from(this).notify(0,createNotification("Task removed","Tap here to view tasks").build())
 
         }
         //Function for Swipe
@@ -143,6 +151,7 @@ class MainActivity : AppCompatActivity() {
             intent1.putExtra("id", id)
             startActivity(intent1)
             Log.d("valueOfId", id.toString())
+
         }
 
         //Setup Date here
@@ -163,15 +172,39 @@ class MainActivity : AppCompatActivity() {
         Log.d("yearIs", year.toString())
         Log.d("dayIs", dow)
 
-
-
-
         recyclerView.adapter = adapter
-
-
-
     }
 
+    private  fun createNotification(title:String,text:String): NotificationCompat.Builder {
+
+        val fullScreenIntent = Intent(this, MainActivity::class.java)
+        val fullScreenPendingIntent = PendingIntent.getActivity(this, 0,
+                fullScreenIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+        return NotificationCompat.Builder(this, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setContentTitle(title)
+                .setContentText(text)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_ALARM)
+                .setFullScreenIntent(fullScreenPendingIntent,true)
+                .setAutoCancel(true)
+    }
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = channel_name
+            //val descriptionText = getString(R.string.channel_description)
+            val importance = NotificationManager.IMPORTANCE_HIGH
+
+            val channel = NotificationChannel(CHANNEL_ID, name, importance)
+            // Register the channel with the system
+            val notificationManager: NotificationManager =
+                    getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
 
 
 }
