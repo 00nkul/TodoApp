@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".MainActivity"
     android:background="@color/faint"
@@ -35,33 +35,47 @@
                 android:layout_gravity="center"
                 android:orientation="horizontal"
                 android:padding="5dp"
-                android:weightSum="4">
+                android:weightSum="3">
 
                 <TextView
                     android:id="@+id/tvDate"
                     android:layout_width="40dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.3"
+                    android:layout_weight="1"
+                    android:fontFamily="monospace"
                     android:gravity="center"
                     android:text="20"
-                    android:textSize="40sp"
                     android:textColor="@color/white"
-                    android:fontFamily="monospace"/>
+                    android:textSize="40sp" />
 
                 <TextView
                     android:id="@+id/tvDayYear"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="3"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_weight="1"
+                    android:fontFamily="monospace"
+                    android:gravity="center"
                     android:text="Fri\nAug 2021"
-                    android:textSize="20sp"
                     android:textColor="@color/white"
-                    android:fontFamily="monospace"/>
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/btnLogOut"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_weight="1"
+                    android:background="@drawable/background_button"
+                    android:text="Log Out" />
+
+
             </LinearLayout>
 
             <TextView
                 android:id="@+id/tvText"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:padding="5dp"
@@ -75,8 +89,8 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@color/faint"
         android:paddingTop="110dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -99,16 +113,6 @@
         app:layout_constraintEnd_toEndOf="@+id/cardView"
         app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
-    <FrameLayout
-        android:id="@+id/fl_fragement"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardView"
-        app:layout_constraintVertical_bias="0.988">
 
-    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

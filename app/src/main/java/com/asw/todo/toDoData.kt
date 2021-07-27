@@ -1,4 +1,4 @@
-package com.example.todo
+package com.asw.todo
 
 data class toDoData(val todoTitle:String ,val todoContent:String , val priority:String){
     constructor():this("title","contnt",  "af"){}

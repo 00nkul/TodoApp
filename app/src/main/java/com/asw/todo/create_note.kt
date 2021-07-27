@@ -1,4 +1,4 @@
-package com.example.todo
+package com.asw.todo
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -6,15 +6,15 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
@@ -22,6 +22,7 @@ class create_note : AppCompatActivity() {
 
     val CHANNEL_ID = "chanel_id"
     val channel_name = "channel_name"
+    lateinit var auth: FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_note)
@@ -34,9 +35,12 @@ class create_note : AppCompatActivity() {
         val etDescription:EditText = findViewById(R.id.etDescription)
         val ivBack:ImageView = findViewById(R.id.ivBack)
 
+        auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
+
         var id:Int = intent.getIntExtra("id" , 1)
         val database = Firebase.database
-        val myref = database.reference
+        val myref = database.reference.child("NewToDo")
 
         btnAdd.setOnClickListener {
 
@@ -44,10 +48,8 @@ class create_note : AppCompatActivity() {
             val desc :String= etDescription.text.toString()
             val dataObj = toDoData(head,desc,"low")
 
-            //database.child("users").child(userId).setValue(user)
 
-            //val newitem = myref.child("toDo").child("$id").push()
-            val newitem = myref.child("toDo").push()
+            val newitem = myref.child("${currentUser?.uid}").push()
             newitem.setValue(dataObj)
 
             //database.child("users").child(userId).child("username").setValue(name) while edit

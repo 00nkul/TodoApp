@@ -1,4 +1,4 @@
-package com.example.todo
+package com.asw.todo
 
 
 import android.app.NotificationChannel
@@ -9,6 +9,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -34,19 +36,33 @@ class MainActivity : AppCompatActivity() {
 
     val CHANNEL_ID = "Channel_ID"
     val channel_name = "channel_name"
+    lateinit var auth:FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         createNotificationChannel()
         supportActionBar?.hide()
 
-
         var id = 1;
         val addBtn:FloatingActionButton = findViewById(R.id.addBtn)
+        val btnLogOut:Button = findViewById(R.id.btnLogOut)
         val recyclerView: RecyclerView = findViewById(R.id.recyclerView)
+
         //LayoutManager for the recylcerView
         recyclerView.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
+
+        //Shared preference
+        val sharedPreferences = getSharedPreferences("Data", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+
+        if (! sharedPreferences.getBoolean("SignedIn",false)){
+            startActivity(Intent(this,Login::class.java))
+        }
+
+        auth = FirebaseAuth.getInstance()
+        val currentUser = auth.currentUser
 
         val database = Firebase.database
 
@@ -58,8 +74,7 @@ class MainActivity : AppCompatActivity() {
 
 
 
-        val myref = database.getReference("toDo")
-
+        val myref = database.getReference("NewToDo").child("${currentUser?.uid}")
         val keys  = arrayListOf<String>()
         val data = ArrayList<toDoData>()
 
@@ -69,8 +84,7 @@ class MainActivity : AppCompatActivity() {
             override fun onDataChange(snapshot: DataSnapshot) {
 
                 data.removeAll(data)
-                val value = snapshot.value
-                //val todo :toDoData = value as toDoData
+
                 for (snap in snapshot.children) {
 
                     //Cast data from database to data class
@@ -83,19 +97,9 @@ class MainActivity : AppCompatActivity() {
                     keys.add(snap.key.toString())
                     val adapter = CustomAdapter(data)
                     recyclerView.adapter = adapter
-                    //toDoData data = snap.getChildren(toDoData.class);
-//                    val data = snap.value as toDoData
-//                    Log.d("sNAP" , snap.toString())
-//                    Log.d("toPrior" , todo.priority)
-//                    Log.d("toTitle" , todo.todoTitle)
-                    Log.d("toContent", snap.key.toString())
                 }
 
-                if (value != null) {
-                    Log.d("valueofthevalue", value.toString())
-                } else {
-                    Toast.makeText(applicationContext, "Unable to load", Toast.LENGTH_SHORT).show()
-                }
+
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -106,18 +110,17 @@ class MainActivity : AppCompatActivity() {
 
 
         val adapter = CustomAdapter(data)
-        //Function for Delete
+
+        //Function for Delete from database
         fun deleteFromDatabase(id: Int) {
-            val database2 = Firebase.database
-            val refrence = database2.getReference("toDo")
-            refrence.child(keys[id]).removeValue()
-
+            myref.child(keys[id]).removeValue()
             NotificationManagerCompat.from(this).notify(0,createNotification("Task removed","Tap here to view tasks").build())
-
         }
+
         //Function for Swipe
         val swipeGesture = object :SwipeGesture(){
 
+            //On Move
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                val fromPosition = viewHolder.adapterPosition
                val toPosition = target.adapterPosition
@@ -127,6 +130,7 @@ class MainActivity : AppCompatActivity() {
 
                 return false
             }
+            //On swiped
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 when(direction){
                     ItemTouchHelper.LEFT -> {
@@ -154,6 +158,16 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        //Logging out user
+        btnLogOut.setOnClickListener {
+            auth.signOut()
+
+            editor.putBoolean("SignedIn",false)
+            editor.apply()
+
+            startActivity(Intent(this,Login::class.java))
+        }
+
         //Setup Date here
         val tvDate:TextView = findViewById(R.id.tvDate)
         val tvDayYear:TextView = findViewById(R.id.tvDayYear)
@@ -166,15 +180,18 @@ class MainActivity : AppCompatActivity() {
         tvDate.text = day.toString()
         tvDayYear.text = "$dow \n$month ${year.toString()}"
 
-        Log.d("datteIs", data.toString())
-        Log.d("Monthis", month.toString())
-        Log.d("dayis", day.toString())
-        Log.d("yearIs", year.toString())
-        Log.d("dayIs", dow)
 
         recyclerView.adapter = adapter
+
+
     }
 
+    override fun onBackPressed() {
+        this.finish()
+        super.onBackPressed()
+    }
+
+    //Functions for Notifications
     private  fun createNotification(title:String,text:String): NotificationCompat.Builder {
 
         val fullScreenIntent = Intent(this, MainActivity::class.java)
@@ -190,16 +207,12 @@ class MainActivity : AppCompatActivity() {
                 .setFullScreenIntent(fullScreenPendingIntent,true)
                 .setAutoCancel(true)
     }
+    //For Notification Channel
     private fun createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = channel_name
-            //val descriptionText = getString(R.string.channel_description)
             val importance = NotificationManager.IMPORTANCE_HIGH
-
             val channel = NotificationChannel(CHANNEL_ID, name, importance)
-            // Register the channel with the system
             val notificationManager: NotificationManager =
                     getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)

@@ -1,24 +1,15 @@
-package com.example.todo
+package com.asw.todo
 
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.Typeface
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
-import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import java.util.*
-import kotlin.math.log
 
 class CustomAdapter (val data:ArrayList<toDoData>):RecyclerView.Adapter<CustomAdapter.ViewHolder>(){
 

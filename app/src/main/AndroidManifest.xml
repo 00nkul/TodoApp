@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.todo">
+    package="com.asw.todo">
 
-    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT"/>
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,9 +11,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Todo">
-        <activity android:name=".create_note"></activity>
-        <activity android:name=".todo_item" />
-        <activity android:name=".MainActivity">
+        <activity android:name="com.asw.todo.Register"></activity>
+        <activity android:name="com.asw.todo.Login" />
+        <activity android:name="com.asw.todo.create_note" />
+        <activity android:name="com.asw.todo.todo_item" />
+        <activity android:name="com.asw.todo.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
