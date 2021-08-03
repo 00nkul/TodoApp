@@ -4,10 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".MainActivity"
     android:background="@color/faint"
-    >
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
@@ -56,7 +55,7 @@
                     android:layout_marginRight="20dp"
                     android:layout_weight="1"
                     android:fontFamily="monospace"
-                    android:gravity="center"
+                    android:gravity="left"
                     android:text="Fri\nAug 2021"
                     android:textColor="@color/white"
                     android:textSize="20sp" />
@@ -78,11 +77,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:fontFamily="monospace"
                 android:padding="5dp"
                 android:text="Here is your today's work"
-                android:textSize="20sp"
                 android:textColor="#D8DFF3"
-                android:fontFamily="monospace"/>
+                android:textSize="20sp" />
 
         </LinearLayout>
     </androidx.cardview.widget.CardView>
@@ -104,15 +103,15 @@
         android:id="@+id/addBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="575dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="60dp"
         android:clickable="true"
         android:src="@drawable/ic_baseline_add_24"
         app:backgroundTint="@color/faint"
         app:fabSize="normal"
-        app:layout_constraintEnd_toEndOf="@+id/cardView"
-        app:layout_constraintTop_toBottomOf="@+id/cardView" />
-
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.952"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
