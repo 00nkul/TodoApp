@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                Toast.makeText(applicationContext, "Unable to load", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(applicationContext, "Unable to load", Toast.LENGTH_SHORT).show()
             }
         })
 

@@ -28,6 +28,9 @@ class Register : AppCompatActivity() {
             if (pass.length < 6){
                 etPass.error = "Password must be more than 6 digit "
             }
+            else if(mail ==""){
+                etMail.error = "Enter Mail First"
+            }
             else{
                 auth.createUserWithEmailAndPassword(mail,pass)
                     .addOnCompleteListener(this){task->

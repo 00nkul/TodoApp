@@ -38,20 +38,28 @@ class Login : AppCompatActivity() {
             val mail = etMail.text.toString().trim()
             val pass = etPass.text.toString().trim()
 
-            auth.signInWithEmailAndPassword(mail,pass)
-                .addOnCompleteListener(this){task->
+            if(mail == "" || pass.length < 6){
+                Toast.makeText(this,"Enter credentials first ..",Toast.LENGTH_LONG).show()
+                etMail.error = "Enter mail!"
+                etPass.error = "Password must be grater  than 6"
+            }
+            else{
+                auth.signInWithEmailAndPassword(mail,pass)
+                        .addOnCompleteListener(this){task->
 
-                    if (task.isSuccessful){
-                        Toast.makeText(this,"Sign in success", Toast.LENGTH_LONG).show()
-                        editor.putBoolean("SignedIn",true)
-                        editor.apply()
-                        startActivity(Intent(this,MainActivity::class.java))
-                    }
-                    else{
-                        Toast.makeText(this,"Invalid credentials", Toast.LENGTH_LONG).show()
-                    }
+                            if (task.isSuccessful){
+                                Toast.makeText(this,"Sign in success", Toast.LENGTH_LONG).show()
+                                editor.putBoolean("SignedIn",true)
+                                editor.apply()
+                                startActivity(Intent(this,MainActivity::class.java))
+                            }
+                            else{
+                                Toast.makeText(this,"Invalid credentials", Toast.LENGTH_LONG).show()
+                            }
 
-                }
+                        }
+            }
+
         }
 
         btnSignUp.setOnClickListener {
